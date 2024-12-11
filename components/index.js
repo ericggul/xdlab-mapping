@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import * as S from "./styles";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 
 const PARAMS = {
   left: {
@@ -18,27 +18,27 @@ const PARAMS = {
 };
 
 export default function ScreenFrame() {
-  const searchParams = useSearchParams();
-  const side = searchParams.get("side");
+  const router = useRouter();
+  const { side } = router.query;
   const [isTest, setIsTest] = useState(true);
   const [url, setUrl] = useState("");
   const [isUrlSubmitted, setIsUrlSubmitted] = useState(false);
 
   // Initialize state values based on side from PARAMS, fallback to dashboard values
-  const [heightVh, setHeightVh] = useState(PARAMS[side]?.heightVh || PARAMS.left.heightVh);
-  const [topVh, setTopVh] = useState(PARAMS[side]?.topVh || PARAMS.left.topVh);
-  const [widthVw, setWidthVw] = useState(PARAMS[side]?.widthVw || PARAMS.left.widthVw);
-  const [leftVw, setLeftVw] = useState(PARAMS[side]?.leftVw || PARAMS.left.leftVw);
+  const [heightVh, setHeightVh] = useState(PARAMS.left.heightVh);
+  const [topVh, setTopVh] = useState(PARAMS.left.topVh);
+  const [widthVw, setWidthVw] = useState(PARAMS.left.widthVw);
+  const [leftVw, setLeftVw] = useState(PARAMS.left.leftVw);
 
-  // Update values when side changes
+  // Update values when side changes and router is ready
   useEffect(() => {
-    if (side && PARAMS[side]) {
+    if (router.isReady && side && PARAMS[side]) {
       setHeightVh(PARAMS[side].heightVh);
       setTopVh(PARAMS[side].topVh);
       setWidthVw(PARAMS[side].widthVw);
       setLeftVw(PARAMS[side].leftVw);
     }
-  }, [side]);
+  }, [router.isReady, side]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
